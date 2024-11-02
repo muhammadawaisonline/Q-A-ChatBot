@@ -54,7 +54,7 @@ if user_input and api_key:
     response = generate_response(user_input, api_key=api_key, llm=llm, temprature=temprature, max_tokens=max_tokens)
     st.write(response)
 elif user_input:
-    st.warning("Please enter onpen api key in the sidbar")
+    st.warning("Please enter open api key in the sidbar")
 else:
     st.warning("Please provide the user input")
     
