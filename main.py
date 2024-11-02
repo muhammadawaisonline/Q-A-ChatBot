@@ -58,9 +58,3 @@ elif user_input:
 else:
     st.warning("Please provide the user input")
     
-
-
-
-
-
-
