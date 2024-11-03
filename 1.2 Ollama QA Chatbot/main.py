@@ -24,9 +24,8 @@ prompt =  ChatPromptTemplate.from_messages(
     ]
 )
 
-def generate_response(question, api_key, llm, temprature, max_tokens):
-    openai.api_key= api_key
-    llm = ChatOpenAI(model=llm)
+def generate_response(question, engine, temprature, max_tokens):
+    llm = ollama(model= engine)
     output_parser = StrOutputParser()
     chain= prompt | llm | output_parser
     answer = chain.invoke({"question": question})
@@ -38,10 +37,10 @@ st.title("QA ChatBot with OPENAI")
 #sidebar for settings
 
 st.sidebar.title("settings")
-api_key = st.sidebar.text_input("Enter your Open API key", type="password")
+
 
 # Drop down to select AI models
-llm = st.sidebar.selectbox("Select an Openai Model", ["gpt-4", "gpt-4o", "gpt-4-turbo"])
+engine = st.sidebar.selectbox("Select an Openai Model", ["llama3.2"])
 
 # adjust response parameter
 temprature = st.sidebar.slider("Temprature", min_value=0.0, max_value=1.0, value=0.7)
