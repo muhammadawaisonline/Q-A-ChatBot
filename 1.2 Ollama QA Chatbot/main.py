@@ -49,11 +49,9 @@ max_tokens = st.sidebar.slider("Max Tokens", min_value=50, max_value=300, value=
 #main interface for user input
 st.write("Go ahead and ask any question")
 user_input = st.text_input("You: ")
-if user_input and api_key:
-    response = generate_response(user_input, api_key=api_key, llm=llm, temprature=temprature, max_tokens=max_tokens)
+if user_input:
+    response = generate_response(question= user_input, engine=engine, temprature=temprature, max_tokens=max_tokens)
     st.write(response)
-elif user_input:
-    st.warning("Please enter open api key in the sidbar")
 else:
     st.warning("Please provide the user input")
     
