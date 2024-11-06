@@ -104,9 +104,9 @@ if api_key:
 
         conversational_rag_chain = RunnableWithMessageHistory(
             rag_chain, get_session_history, 
-            input_messages_key= "input"
-            history_messages_key= "chat_history"
-            output_messages_key="answer"
+            input_messages_key= "input",
+            history_messages_key= "chat_history",
+            output_messages_key="answer",
         )
 
         user_input = st.text_input("Your Question:")
@@ -126,7 +126,7 @@ if api_key:
 
 else:
     st.warning("Please Enter the Groq API key")
-    
+
 
 
 
