@@ -126,8 +126,3 @@ if api_key:
 
 else:
     st.warning("Please Enter the Groq API key")
-
-
-
-
-
