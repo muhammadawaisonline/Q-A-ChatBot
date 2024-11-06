@@ -6,3 +6,4 @@ streamlit
 langchain-openai
 langchain-ollama
 langchain-groq
+langchain-huggingface
