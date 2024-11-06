@@ -47,7 +47,15 @@ if api_key:
         loader = PyPDFLoader(temppdf)
         docs = loader.load()
         documents.extend(docs)
-        
-         
+
+    # Split create embddings of uploaded documents
+    splitter = RecursiveCharacterTextSplitter(chunk_size= 500, chunk_overlap= 50)
+    text_splitter = splitter.split_documents(documents)
+    vectorStore = Chroma.from_documents(documents=text_splitter, embedding=embeddings)
+    retriever = vectorStore.as_retriever()
+
+    
+
+
 
 
