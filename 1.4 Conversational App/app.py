@@ -13,6 +13,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
 
 os.environ["HUGGINGFACE_TOKEN"] = os.getenv("HUGGINGFACE_TOKEN")
 embeddings = HuggingFaceEmbeddings(model_name= "all-MiniLM-L6-v2")
@@ -49,50 +50,84 @@ if api_key:
         documents.extend(docs)
 
     # Split create embddings of uploaded documents
-    splitter = RecursiveCharacterTextSplitter(chunk_size= 500, chunk_overlap= 50)
-    text_splitter = splitter.split_documents(documents)
-    vectorStore = Chroma.from_documents(documents=text_splitter, embedding=embeddings)
-    retriever = vectorStore.as_retriever()
+        splitter = RecursiveCharacterTextSplitter(chunk_size= 500, chunk_overlap= 50)
+        text_splitter = splitter.split_documents(documents)
+        vectorStore = Chroma.from_documents(documents=text_splitter, embedding=embeddings)
+        retriever = vectorStore.as_retriever()
 
-    contextualize_q_system_prompt = (
-        "Given a chat history and latest user question"
-        "which might reference context in the chat History,"
-        "formulate the standalone questions which can be understood"
-        "without the chat History. Do not answer the question"
-        "just fromulate it if needed, otherwise return it as is."
-    )
-    contextualize_q_prompt = ChatPromptTemplate.from_messages(
-        [
-            "system", contextualize_q_system_prompt,
-            MessagesPlaceholder("chat_history"),
-            "human", "{input}"
-        ]
-    )
-    history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
+        contextualize_q_system_prompt = (
+            "Given a chat history and latest user question"
+            "which might reference context in the chat History,"
+            "formulate the standalone questions which can be understood"
+            "without the chat History. Do not answer the question"
+            "just fromulate it if needed, otherwise return it as is."
+        )
+        contextualize_q_prompt = ChatPromptTemplate.from_messages(
+            [
+                "system", contextualize_q_system_prompt,
+                MessagesPlaceholder("chat_history"),
+                "human", "{input}"
+            ]
+        )
+        history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
 
 
-    #Answer Questions
+        #Answer Questions
 
-    #Aswer Questions
-    system_prompt = (
-        "You are an assistant for question answer talks"
-        "use the following pieces of retrieved context to answer"
-        "the question, if you don't know the answer, say that you"
-        "don't know. Use three sentences maximum and keep the answer"
-        "concise"
-        "/n/n"
-        "{context}"
-    )
-    qa_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            MessagesPlaceholder("chat_history")
-            ("human", "{input}")
+        #Aswer Questions
+        system_prompt = (
+            "You are an assistant for question answer talks"
+            "use the following pieces of retrieved context to answer"
+            "the question, if you don't know the answer, say that you"
+            "don't know. Use three sentences maximum and keep the answer"
+            "concise"
+            "/n/n"
+            "{context}"
+        )
+        qa_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", system_prompt),
+                MessagesPlaceholder("chat_history")
+                ("human", "{input}")
 
-        ]
-    )
+            ]
+        )
 
-    question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
-    rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+        question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
+        rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+
+        def get_session_history(session:str) -> BaseChatMessageHistory:
+            if session_id not in st.session_state.store:
+                st.session_state.store[session_id] = ChatMessageHistory()
+            return st.session_state.stores[session_id]
+
+
+        conversational_rag_chain = RunnableWithMessageHistory(
+            rag_chain, get_session_history, 
+            input_messages_key= "input"
+            history_messages_key= "chat_history"
+            output_messages_key="answer"
+        )
+
+        user_input = st.text_input("Your Question:")
+        if user_input:
+            session_history = get_session_history(session_id)
+            response = conversational_rag_chain.invoke(
+                {"input": user_input},
+                config={
+                    "configurable": {"session_id": session_id}
+                }
+            ) # Construct a key 'abs123' in store
+
+            # Now display ou messages
+            st.write(st.session_state.store)
+            st.write("Assistant", response["answer"])
+            st.write("Chat History", session_history.messages)
+
+else:
+    st.warning("Please Enter the Groq API key")
     
+
+
+
 
