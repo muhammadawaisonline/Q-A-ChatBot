@@ -54,8 +54,45 @@ if api_key:
     vectorStore = Chroma.from_documents(documents=text_splitter, embedding=embeddings)
     retriever = vectorStore.as_retriever()
 
+    contextualize_q_system_prompt = (
+        "Given a chat history and latest user question"
+        "which might reference context in the chat History,"
+        "formulate the standalone questions which can be understood"
+        "without the chat History. Do not answer the question"
+        "just fromulate it if needed, otherwise return it as is."
+    )
+    contextualize_q_prompt = ChatPromptTemplate.from_messages(
+        [
+            "system", contextualize_q_system_prompt,
+            MessagesPlaceholder("chat_history"),
+            "human", "{input}"
+        ]
+    )
+    history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
+
+
+    #Answer Questions
+
+    #Aswer Questions
+    system_prompt = (
+        "You are an assistant for question answer talks"
+        "use the following pieces of retrieved context to answer"
+        "the question, if you don't know the answer, say that you"
+        "don't know. Use three sentences maximum and keep the answer"
+        "concise"
+        "/n/n"
+        "{context}"
+    )
+    qa_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_prompt),
+            MessagesPlaceholder("chat_history")
+            ("human", "{input}")
+
+        ]
+    )
+
+    question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
+    rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
     
-
-
-
 
