@@ -13,3 +13,4 @@ arxiv
 wikipedia
 ipykernel
 faiss-cpu
+openai
