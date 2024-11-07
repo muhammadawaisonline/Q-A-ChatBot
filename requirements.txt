@@ -7,3 +7,7 @@ langchain-openai
 langchain-ollama
 langchain-groq
 langchain-huggingface
+duckduckgo-search
+pymupdf
+arxiv
+wikipedia
