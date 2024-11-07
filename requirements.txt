@@ -12,3 +12,4 @@ pymupdf
 arxiv
 wikipedia
 ipykernel
+faiss-cpu
