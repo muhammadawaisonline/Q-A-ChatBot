@@ -11,3 +11,4 @@ duckduckgo-search
 pymupdf
 arxiv
 wikipedia
+ipykernel
