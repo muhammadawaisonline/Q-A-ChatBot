@@ -8,6 +8,9 @@ from langchain.callbacks import StreamlitCallbackHandler
 import os 
 from dotenv import load_dotenv
 load_dotenv()
+
+
+
 arxive_wrapper = ArxivAPIWrapper(top_k_results=1, doc_content_chars_max=250)
 arxive = ArxivQueryRun(api_wrapper=arxive_wrapper)
 wiki_wrapper = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=250)
@@ -44,9 +47,11 @@ if prompt := st.chat_input(placeholder="What is machine learning?"):
     tools = [search, arxive, wikipedia]
     search_agent = initialize_agent(tools, llm, agent=agent_types.AgentType.ZERO_SHOT_REACT_DESCRIPTION)
 
+
+
     with st.chat_message("assistant"):
         st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
         response = search_agent.run(st.session_state.messages, callbacks=[st_cb])
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.write(response)
-        
+
