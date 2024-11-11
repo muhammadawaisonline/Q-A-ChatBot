@@ -13,3 +13,17 @@ st.set_page_config("Text to Math Problem Solver and Data search Asistant", page_
 st.title("Text to amth problem Solver with Gamma2")
 
 groq_api_key = st.sidebar.text_input(label="Groq API Key", type="password")
+
+if not groq_api_key:
+    st.info("Please Add Your Groq API Key to Continue.")
+    st.stop()
+
+llm = ChatGroq(model="Gemma2-9b-It", groq_api_key= groq_api_key)
+
+##Initializing the tool
+wikipedia_wrapper = WikipediaAPIWrapper()
+wikipedia_tool = Tool(
+    name="wikipedia",
+    func= wikipedia_wrapper.run(),
+    description= "A tool for searching the internet to find the various information on the given question"
+)
