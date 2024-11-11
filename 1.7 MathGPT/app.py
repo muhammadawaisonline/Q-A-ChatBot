@@ -27,3 +27,12 @@ wikipedia_tool = Tool(
     func= wikipedia_wrapper.run(),
     description= "A tool for searching the internet to find the various information on the given question"
 )
+
+#Initializing Math Tool
+math_chain = LLMMathChain(llm=llm)
+calculator= Tool(
+    name="calculator",
+    func=math_chain.run(),
+    description="A Tool for answering math related questions.only input mathematical expression need to be provided."
+) 
+
