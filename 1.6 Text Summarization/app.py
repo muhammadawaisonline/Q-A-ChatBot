@@ -20,3 +20,30 @@ generic_url = st.text_input("URL", label_visibility="collapsed")
 ## Gamma Model using Groq Api key
 llm= ChatGroq(groq_api_key= groq_api_key, model= "Gemma-7b-It")
 
+prompt_template = """
+Provide the summary of the following content in 300 words:
+Contenet: {text}
+"""
+prompt= PromptTemplate(template= prompt_template, input_variables=["text"] )
+
+
+## Setting us main Page of App
+if st.button("Summarize the content from YT or website"):
+    ## Validate all type of inputs
+    if not groq_api_key.strip() or not generic_url.strip():
+        st.error("Provide the information to get started.")
+    elif not validators.url(generic_url):
+        st.error("Please enter a valid url. It may be YT video or website.")
+    else:
+        try:
+            with st.spinner("Waiting..."):
+                ## Load the website or yt video data
+                if "youtube.com" in generic_url:
+                    loader = YoutubeLoader.from_youtube_url(generic_url, add_video_info= True)
+                else: 
+                    loader = UnstructuredURLLoader(urls=[generic_url], ssl_verify= False,
+                                                   headers= {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"})
+                docs= loader.load()
+
+               
+            
