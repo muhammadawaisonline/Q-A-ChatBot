@@ -10,7 +10,7 @@ from langchain.callbacks import StreamlitCallbackHandler
 
 ## Setup API Streamlit app
 st.set_page_config("Text to Math Problem Solver and Data search Asistant", page_icon="💢")
-st.title("Text to amth problem Solver with Gamma2")
+st.title("Text to math problem Solver with Gamma2")
 
 groq_api_key = st.sidebar.text_input(label="Groq API Key", type="password")
 
@@ -56,7 +56,7 @@ chain = LLMChain(
 
 reasoning_tool = Tool(
     name= "Reasoning tool",
-    func=chain.run()
+    func=chain.run(),
     description= "A tool for answering logic-based and reasoning questions."
 
 )
