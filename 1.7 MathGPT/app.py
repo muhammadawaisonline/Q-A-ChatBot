@@ -36,3 +36,28 @@ calculator= Tool(
     description="A Tool for answering math related questions.only input mathematical expression need to be provided."
 ) 
 
+prompt = """
+You are agent solving users mathematical questions. Logically arrive at the solutions and provide a detail explanations
+and display it point wise at the below questions
+Question: {question}
+Answer:
+"""
+
+prompt_template = PromptTemplate(
+    input_variables=["question"],
+    template=prompt
+)
+
+## Combining all the tools into chain
+chain = LLMChain(
+    llm=llm,
+    prompt=prompt_template
+)
+
+reasoning_tool = Tool(
+    name= "Reasoning tool",
+    func=chain.run()
+    description= "A tool for answering logic-based and reasoning questions."
+
+)
+
