@@ -61,3 +61,17 @@ reasoning_tool = Tool(
 
 )
 
+## Initializing the agent
+assistant_agent = initialize_agent(
+    tools=[wikipedia_tool, calculator, reasoning_tool],
+    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+    verbose= False,
+    handle_parsing_errors = True
+)
+
+if "messages" not in st.session_state:
+    st.session_state["messages"] = [{"role": "assistant", "content": "Hi I am math chatbot who can answer all your maths questions"}]
+
+for msg in st.session_state.messages:
+    
+
