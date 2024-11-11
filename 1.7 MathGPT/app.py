@@ -74,6 +74,26 @@ if "messages" not in st.session_state:
 
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
-    
+
+## Lets start the intraction 
+question = st.text_area("Enter your questions: ", "I have 5 bananas and 7 grapes I eat 2 bananas shahzad piced up 1 grapes but islam eata half garpe. How many bananas and grapes left behind?")
+
+if st.button("Find My Answer"):
+    if question:
+        with st.spinner("Generate Response ..."):
+            st.session_state.messages.append({"role":"user", "content": {question}})
+            st.chat_message("user").write(question)
+
+            st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
+            response = assistant_agent.run(st.session_state.messages, callbacks= [st_cb])
+            
+            st.session_state.messages.append({"role":"assistant", "content":response})
+            st.write("### Respnse..")
+            st.success(response)
+    else:
+        st.warning("Please enter the question")
+
+
+
 
 
