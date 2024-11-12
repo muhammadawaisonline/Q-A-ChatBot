@@ -70,7 +70,7 @@ assistant_agent = initialize_agent(
 )
 
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "assistant", "content": "Hi I am math chatbot who can answer all your maths questions"}]
+    st.session_state["messages"] = [{"role": "assistant", "content": "Hi, I am math chatbot who can answer all your maths questions"}]
 
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
@@ -81,13 +81,13 @@ question = st.text_area("Enter your questions: ", "I have 5 bananas and 7 grapes
 if st.button("Find My Answer"):
     if question:
         with st.spinner("Generate Response ..."):
-            st.session_state.messages.append({"role":"user", "content": {question}})
+            st.session_state.messages.append({"role":"user","content": {question}})
             st.chat_message("user").write(question)
 
-            st_cb = StreamlitCallbackHandler(st.container(), expand_new_thoughts=False)
+            st_cb = StreamlitCallbackHandler(st.container(),expand_new_thoughts=False)
             response = assistant_agent.run(st.session_state.messages, callbacks= [st_cb])
             
-            st.session_state.messages.append({"role":"assistant", "content":response})
+            st.session_state.messages.append({"role":"assistant","content":response})
             st.write("### Respnse..")
             st.success(response)
     else:
