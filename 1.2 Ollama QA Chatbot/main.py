@@ -46,3 +46,12 @@ engine = st.sidebar.selectbox("Select an Openai Model", ["llama3.2"])
 temprature = st.sidebar.slider("Temprature", min_value=0.0, max_value=1.0, value=0.7)
 max_tokens = st.sidebar.slider("Max Tokens", min_value=50, max_value=300, value=150)
 
+#main interface for user input
+st.write("Go ahead and ask any question")
+user_input = st.text_input("You: ")
+if user_input:
+    response = generate_response(question= user_input, engine=engine, temprature=temprature, max_tokens=max_tokens)
+    st.write(response)
+else:
+    st.warning("Please provide the user input")
+    
