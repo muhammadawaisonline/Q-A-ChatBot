@@ -31,3 +31,18 @@ def generate_response(question, engine, temprature, max_tokens):
     answer = chain.invoke({"question": question})
     return answer
 
+# Title of the app
+st.title("QA ChatBot with OPENAI")
+
+#sidebar for settings
+
+st.sidebar.title("settings")
+
+
+# Drop down to select AI models
+engine = st.sidebar.selectbox("Select an Openai Model", ["llama3.2"])
+
+# adjust response parameter
+temprature = st.sidebar.slider("Temprature", min_value=0.0, max_value=1.0, value=0.7)
+max_tokens = st.sidebar.slider("Max Tokens", min_value=50, max_value=300, value=150)
+
