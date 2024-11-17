@@ -20,3 +20,7 @@ unstructured
 pytube
 numexpr
 huggingface-hub
+cassio
+tiktoken
+datasets
+
